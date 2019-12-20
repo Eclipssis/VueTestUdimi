@@ -7,22 +7,38 @@
 			</li>
 
 			<li v-if="user" class="menu__item">
-				<a class="menu__link">Log out</a>
+				<a class="menu__link" @click="onLogOut">Log out</a>
 			</li>
 		</ul>
 	</div>
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 	export default {
 		name: 'Header',
 
 		computed: {
 			...mapState({
 				user: state => state.auth.userInfo
-			})
-		}
+			}),
+		},
+
+		methods: {
+			...mapActions({
+				logOut: 'auth/logOut'
+			}),
+
+			async onLogOut () {
+				try {
+					await this.logOut()
+					this.$router.push('/login')
+
+				} catch (error) {
+					console.log('handle error', error)
+				}
+			}
+		},
 	}
 </script>
 

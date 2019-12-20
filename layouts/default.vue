@@ -11,6 +11,13 @@ import Header from "@/layouts/header";
 export default {
   components: {
     Header
+  },
+
+  mounted () {
+    this.$store.commit('auth/setUser', {
+      user: JSON.parse(window.localStorage.getItem("user")),
+      token: window.localStorage.getItem("token")
+    })
   }
 }
 </script>

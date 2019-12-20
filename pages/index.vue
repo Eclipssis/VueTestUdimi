@@ -22,7 +22,7 @@
 
 <script>
 import DataPanel from '~/components/DataPanel.vue'
-import { mapActions } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   components: {
@@ -35,23 +35,33 @@ export default {
     }
   },
 
+  computed: {
+    ...mapState({
+      user: state => state.auth.userInfo
+    }),
+  },
+
   methods: {
     ...mapActions({
       fetchProjects: 'project/fetchProjects'
     })
   },
 
-  async mounted () {
-    const isUserAuthorized = JSON.parse(localStorage.getItem('user')) || this.$store.state.auth.userInfo
-    if (!isUserAuthorized) {
-      this.$router.push('/login')
-    }
+  mounted () {
+    // TODO: it can be refactor to route meta data
+    this.$nextTick(async () => {
+      if (!this.user) {
+        this.$router.push('/login')
+      }
 
-    try {
-      this.projects = await this.fetchProjects()
-    } catch (error) {
-      console.log('handle error', error)
-    }
+      if (this.user) {
+        try {
+          this.projects = await this.fetchProjects()
+        } catch (error) {
+          console.log('handle error', error)
+        }
+      }
+    })
   }
 }
 </script>

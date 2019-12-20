@@ -51,7 +51,7 @@
 	import Vue from 'vue'
 	import Vuelidate from 'vuelidate'
 	import Button from "@/components/Button";
-	import { mapActions } from 'vuex'
+	import { mapActions, mapState } from 'vuex'
 	import { validationMixin } from 'vuelidate'
 	const { required } = require('vuelidate/lib/validators')
 
@@ -89,6 +89,12 @@
 				},
 				loading: false
 			}
+		},
+
+		computed: {
+    ...mapState({
+				user: state => state.auth.userInfo
+			}),
 		},
 
 		watch: {
@@ -135,9 +141,16 @@
 						this.loading = false
 					}
 				}
-
-				
 			}
+		},
+
+		mounted () {
+			// TODO: it can be refactor to route meta data
+			this.$nextTick(() => {
+				if (this.user) {
+					this.$router.push('/')
+				}
+			})
 		}
 	}
 </script>
